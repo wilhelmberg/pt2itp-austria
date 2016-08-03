@@ -1,0 +1,56 @@
+========= WINDOWS =================
+
+cd c:\mb\pt2itp-austria
+
+node convert-oa-to-line-json.js data\31254\at\31254.csv austria-pnts.json w
+node convert-oa-to-line-json.js data\31255\at\31255.csv austria-pnts.json a
+node convert-oa-to-line-json.js data\31256\at\31256.csv austria-pnts.json a
+
+node find-error-line.js austria-pnts.json 645799
+
+
+node convert-gip.at-idf-to-line-json.js data\3_routingexport_ogd.txt austria-gip.at-streets.json
+
+
+============ LINUX =============
+
+export PATH="/home/bergw/download/node-v4.4.7-linux-x64/bin:$PATH"
+cd ~/pt2itp/pt2itp
+
+rm ../austria.addresses.mbtiles
+rm ../austria-pnts.json
+
+cp /mnt/c/mb/pt2itp-austria/austria-pnts.json ../
+chmod ugo-x ../austria-pnts.json
+
+cp /mnt/c/mb/pt2itp-austria/austria-gip.at-streets.json ../
+chmod ugo-x ../austria-gip.at-streets.json
+
+rm ../austria-gip.at-streets.mbtiles
+rm ../austria-gip.at-streets.json
+~/tippecanoe/tippecanoe -z12 -Z12 -l gipstreets -n GipStreets -pf -pk -r 0 -o ../austria-gip.at-streets.mbtiles ../austria-gip.at-streets.json
+
+
+rm ../austria.addresses.mbtiles && rm ../austria-pnts.json && cp /mnt/c/mb/pt2itp/austria-pnts.json ../ && chmod ugo-x ../austria-pnts.json
+
+~/tippecanoe/tippecanoe -z12 -Z12 -l addresses -n Addresses -pf -pk -r 0 -o ../austria.addresses.mbtiles ../austria-pnts.json
+
+--MAP
+node index.js map --in-network ../austria.network.mbtiles --in-addresses ../austria.addresses.mbtiles --output ../austria.interpolated.geojson --map ./lib/map/qa-tiles.js
+
+rm ../austria.interpolated.mbtiles
+~/tippecanoe/tippecanoe -z14 -Z8 -o ../austria.interpolated.mbtiles < ../austria.interpolated.geojson
+
+
+--UNNAMED
+rm ../austria.unnamed.geojson
+node index.js name --in-network ../austria.network.mbtiles --in-addresses ../austria.addresses.mbtiles --output ../austria.unnamed.geojson --map ./lib/map/qa-tiles.js --debug
+
+rm ../austria.unnamed.mbtiles
+~/tippecanoe/tippecanoe -z14 -Z8 -o ../austria.unnamed.mbtiles < ../austria.unnamed.geojson
+
+
+--MBVIEW
+cd ~/mbview
+node cli.js --port 9000 ~/pt2itp/austria.network.mbtiles ~/pt2itp/austria.addresses.mbtiles ~/pt2itp/austria.interpolated.mbtiles
+node cli.js --port 9000 ~/pt2itp/austria.unnamed.mbtiles

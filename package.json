@@ -1,0 +1,10 @@
+{
+    "name": "pt2itp-Austria",
+    "description": "pt2itp-Austria",
+    "version": "0.0.1",
+    "main": "convert-oa-to-line-json.js",
+    "url": "https://github.com/BergWerkGIS/pt2itp-austria",
+    "dependencies": {
+        "fast-csv": "^2.1.0"
+    }
+}
