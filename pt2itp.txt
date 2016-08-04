@@ -1,3 +1,7 @@
+GIP.at (official street and routing graph of Austria)
+https://www.data.gv.at/katalog/dataset/3fefc838-791d-4dde-975b-a4131a54e7c5
+
+
 ========= WINDOWS =================
 
 cd c:\mb\pt2itp-austria
@@ -23,12 +27,12 @@ rm ../austria-pnts.json
 cp /mnt/c/mb/pt2itp-austria/austria-pnts.json ../
 chmod ugo-x ../austria-pnts.json
 
+rm ../austria-gip.at-streets.mbtiles
+rm ../austria-gip.at-streets.json
 cp /mnt/c/mb/pt2itp-austria/austria-gip.at-streets.json ../
 chmod ugo-x ../austria-gip.at-streets.json
 
-rm ../austria-gip.at-streets.mbtiles
-rm ../austria-gip.at-streets.json
-~/tippecanoe/tippecanoe -z12 -Z12 -l gipstreets -n GipStreets -pf -pk -r 0 -o ../austria-gip.at-streets.mbtiles ../austria-gip.at-streets.json
+~/tippecanoe/tippecanoe -z12 -Z12 -l streets -n streets -pf -pk -r 0 -o ../austria-gip.at-streets.mbtiles ../austria-gip.at-streets.json
 
 
 rm ../austria.addresses.mbtiles && rm ../austria-pnts.json && cp /mnt/c/mb/pt2itp/austria-pnts.json ../ && chmod ugo-x ../austria-pnts.json
@@ -46,6 +50,8 @@ rm ../austria.interpolated.mbtiles
 rm ../austria.unnamed.geojson
 node index.js name --in-network ../austria.network.mbtiles --in-addresses ../austria.addresses.mbtiles --output ../austria.unnamed.geojson --map ./lib/map/qa-tiles.js --debug
 
+node index.js name --in-network ../austria-gip.at-streets.mbtiles --in-addresses ../austria.addresses.mbtiles --output ../austria.unnamed.geojson
+
 rm ../austria.unnamed.mbtiles
 ~/tippecanoe/tippecanoe -z14 -Z8 -o ../austria.unnamed.mbtiles < ../austria.unnamed.geojson
 
@@ -53,4 +59,7 @@ rm ../austria.unnamed.mbtiles
 --MBVIEW
 cd ~/mbview
 node cli.js --port 9000 ~/pt2itp/austria.network.mbtiles ~/pt2itp/austria.addresses.mbtiles ~/pt2itp/austria.interpolated.mbtiles
+node cli.js --port 9000 ~/pt2itp/austria-gip.at-streets ~/pt2itp/austria.addresses.mbtiles ~/pt2itp/austria.interpolated.mbtiles
 node cli.js --port 9000 ~/pt2itp/austria.unnamed.mbtiles
+node cli.js --port 9000 ~/pt2itp/austria-gip.at-streets.mbtiles
+node cli.js --port 9000 ~/pt2itp/austria.network.mbtiles
